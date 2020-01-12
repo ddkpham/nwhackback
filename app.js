@@ -16,15 +16,62 @@
 
 // [START gae_node_request_example]
 const express = require('express');
+// Firebase App (the core Firebase SDK) is always required and
+// must be listed before other Firebase SDKs
+var firebase = require("firebase/app");
+
+// Add the Firebase products that you want to use
+require("firebase/auth");
+require("firebase/firestore");
+
+// TODO: Replace the following with your app's Firebase project configuration
+// var firebaseConfig = {
+//   // ...
+// };
+const firebaseConfig = {
+  apiKey: "AIzaSyByKn8cPCkuyk8UlQ677H1DeXt94JR5eVk",
+  authDomain: "nwhackdb.firebaseapp.com",
+  databaseURL: "https://nwhackdb.firebaseio.com",
+  projectId: "nwhackdb",
+  storageBucket: "nwhackdb.appspot.com",
+  messagingSenderId: "836715595935",
+  appId: "1:836715595935:web:ea6518d1be5cb8be523aaa",
+  measurementId: "G-Z6KC83REX4"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 const app = express();
+
+const db = firebase.firestore();
+db.settings({timestampsInSnapshots: true})
+
+let citiesRef = db.collection('cities'); 
+let setSF = citiesRef.doc('SF').set({
+  name: 'San Francisco', 
+  state: 'US'
+})
+
 
 app.get('/', (req, res) => {
   res
     .status(200)
-    .send('Hello, world!')
+    .send('Hello, ')
     .end();
 });
+
+app.get('/newCity', (req, res) => {
+  res 
+    .status(200)
+    .send('All gucci')
+    .end()
+
+    let citiesRef = db.collection('cities'); 
+    let setSF = citiesRef.doc('Lon').set({
+      name: 'London', 
+      state: 'UK'
+    })
+})
 
 // Start the server
 const PORT = process.env.PORT || 8080;

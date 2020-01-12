@@ -17,7 +17,8 @@
     "test": "mocha --exit test/*.test.js"
   },
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "firebase": "^7.6.2"
   },
   "devDependencies": {
     "mocha": "^6.1.4",
