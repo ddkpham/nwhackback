@@ -15,6 +15,10 @@
 'use strict';
 
 // [START gae_node_request_example]
+var atob = require('atob');
+var Blob = require('blob');
+var fs = require("fs");
+
 const express = require('express');
 // Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
@@ -24,10 +28,6 @@ var firebase = require("firebase/app");
 require("firebase/auth");
 require("firebase/firestore");
 
-// TODO: Replace the following with your app's Firebase project configuration
-// var firebaseConfig = {
-//   // ...
-// };
 const firebaseConfig = {
   apiKey: "AIzaSyByKn8cPCkuyk8UlQ677H1DeXt94JR5eVk",
   authDomain: "nwhackdb.firebaseapp.com",
@@ -47,8 +47,8 @@ const db = firebase.firestore();
 db.settings({timestampsInSnapshots: true})
 
 let citiesRef = db.collection('cities'); 
-let setSF = citiesRef.doc('SF').set({
-  name: 'San Francisco', 
+let setSF = citiesRef.doc('SFGft').set({
+  name: 'San Francisco Gangasta friendly', 
   state: 'US'
 })
 
@@ -71,6 +71,54 @@ app.get('/newCity', (req, res) => {
       name: 'London', 
       state: 'UK'
     })
+})
+
+let cityRef = db.collection('photos').doc('test');
+const btoaImplementation = str => {
+  try {
+      return btoa(str);
+  } catch(err) {
+      return Buffer.from(str).toString('base64')
+  }
+};
+
+app.get('/prescription-photo', (req, res) => {
+  fs.readFile('out.png', function (err, content) {
+    if (err) {
+        res.writeHead(400, {'Content-type':'text/html'})
+        console.log(err);
+        res.end("No such image");    
+    } else {
+        //specify the content type in the response will be an image
+        res.writeHead(200,{'Content-type':'image/jpg'});
+        res.end(content);
+    }
+});
+})
+
+app.get('/photo', (req, res) =>{
+  let getDoc = cityRef.get()
+  .then( async doc => {
+    if (!doc.exists) {
+      console.log('No such document!');
+    } else {
+      const { data } = doc.data();
+      console.log('data = ', data)
+      var base64Data = data.replace(/^data:image\/png;base64,/, "");
+
+      fs.writeFile("photo.png", base64Data, 'base64', function(err) {
+        console.log(err);
+      });
+    }
+  })
+  .catch(err => {
+    console.log('Error getting document', err);
+  });
+
+  res 
+    .status(200)
+    .send('All gucci')
+    .end()
 })
 
 // Start the server

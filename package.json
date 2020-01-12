@@ -17,6 +17,8 @@
     "test": "mocha --exit test/*.test.js"
   },
   "dependencies": {
+    "atob": "^2.1.2",
+    "blob": "0.0.5",
     "express": "^4.16.3",
     "firebase": "^7.6.2"
   },
